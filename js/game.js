@@ -148,7 +148,7 @@ window.cooldown = {
 }
 
 function tick() {
-    reload()
+    saveGame()
     terminal.clear()
     terminal.echo(menu);
 
@@ -400,6 +400,8 @@ export function sellCrops() {
     player.crops = 0
     terminal.echo(menu)
 }
+
+reload()
 
 function reload() {
     saveGame()
