@@ -32,7 +32,7 @@ const hoes = {
 }
 
 var player = {
-    coins:100000,
+    coins:0,
     hoe:hoes.wooden_hoe,
     crops:0,
     sell_multi:1,
