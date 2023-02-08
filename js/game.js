@@ -10,9 +10,9 @@ const help = `Help:
 
 [u]: go to the upgrades menu    [bu] (upgrade): buy a specified upgrade
 
-[h]: go to the hoe shop    [bh] (hoe): buy a specified hoe, e.g. {bh stone_hoe}
+[h]: go to the hoe shop    [bh] (hoe): buy a specified hoe, example: {bh stone_hoe}
 
-[eh] (hoe): equip a hoe e.g. {eh stone_hoe}    [sell]: sell your crops
+[eh] (hoe): equip a hoe, example: {eh stone_hoe}    [sell]: sell your crops
 
 [ver]: check what version you're playing
 `
