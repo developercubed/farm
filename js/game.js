@@ -6,23 +6,16 @@ const help = `Help:
 
 [he]/[help]: go to help menu
 
-[s]: see stats
+[s]: see stats    [f]: go farming
 
-[f]: go farming
+[u]: go to the upgrades menu    [bu] (upgrade): buy a specified upgrade
 
-[u]: go to the upgrades menu
+[h]: go to the hoe shop    [bh] (hoe): buy a specified hoe
 
-[bu] (upgrade): buy a specified upgrade
+[eh] (hoe): equip a hoe    [sell]: sell your crops
 
-[h]: go to the hoe shop
-
-[bh] (hoe): buy a specified hoe
-
-[eh] (hoe): equip a hoe
-
-[sell]: sell your crops
-
-[ver]: check what version you're playing`
+[ver]: check what version you're playing
+`
 
 
 const hoes = {
@@ -54,8 +47,8 @@ var player = {
 }
 
 const upgrades = {
-    slave_labor:{
-        name: 'Slave Labor',
+    workers:{
+        name: 'Workers',
         base_max_amt:15,
         max_amt: 15,
         boost_name: 'Auto Crops',
