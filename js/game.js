@@ -82,8 +82,8 @@ const upgrades = {
         boost_name: 'Auto Crops',
         boost_object: 'auto_crops',
         boost_amt: .1,
-        price: 250,
-        price_multi: 2
+        price: 50,
+        price_multi: 2.5
         
     },
     hoe_efficiency:{
@@ -93,7 +93,7 @@ const upgrades = {
         boost_name: 'Crop Multi',
         boost_object: 'crop_multi',
         boost_amt: .05,
-        price: 750,
+        price: 200,
         price_multi: 1.5
         
     }
