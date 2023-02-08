@@ -62,6 +62,9 @@ const basePlayer = {
     upgrades_amt:{
 
     },
+    upgrades_price:{
+
+    },
     hoe_has:{
         wooden_hoe:true
     },
@@ -104,6 +107,14 @@ for (let u in upgrades) {
     else {
         player.upgrades_amt = {
             ...player.upgrades_amt,
+            [u]:0
+        }
+    }
+    if (u in player.upgrades_price) {
+    }
+    else {
+        player.upgrades_price = {
+            ...player.upgrades_price,
             [u]:0
         }
     }
@@ -244,11 +255,11 @@ export function buyUpgrade(upgrade) {
         else if (player.coins >= up.price) {
             player.coins = parseFloat((player.coins - up.price).toFixed(1))
             player.upgrades_amt[upgrade] = player.upgrades_amt[upgrade] + 1
-            up.price = parseFloat( up.price.toFixed(1) )
+            player.upgrades_price[upgrade] = parseFloat( player.upgrades_price[upgrade] )
 
 
-            menu = `You bought 1 ${upgrade} for ${up.price} coins \nYour new balance is [${player.coins}] coins`
-            up.price = parseFloat((up.price * up.price_multi.toFixed(1)))
+            menu = `You bought 1 ${upgrade} for ${player.upgrades_price[upgrade]} coins \nYour new balance is [${player.coins}] coins`
+            player.upgrades_price[upgrade] = parseFloat((player.upgrades_price[upgrade] * up.price_multi.toFixed(1)))
             terminal.echo(menu)
         }
         else {
