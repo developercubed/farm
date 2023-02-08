@@ -1,22 +1,42 @@
 window.menu = ''
 
-const version = 'v1.0.0'
+const version = 'v1.1.0'
 
 const help = `Help:
 
-[he]/[help]: go to help menu
+[he]/[help]: go to help menu    [ver]: check what version you're playing
 
-[s]: see stats    [f]: go farming
+[s]: see stats    [f]: go farming    [sell]: sell your crops
 
 [u]: go to the upgrades menu    [bu] (upgrade): buy a specified upgrade
 
 [h]: go to the hoe shop    [bh] (hoe): buy a specified hoe, example: {bh stone_hoe}
 
-[eh] (hoe): equip a hoe, example: {eh stone_hoe}    [sell]: sell your crops
+[eh] (hoe): equip a hoe, example: {eh stone_hoe}
 
-[ver]: check what version you're playing
+[p]: go to the pet shop    [bp] (pet): buy a specified pet, example: {bp dog}
+
+[ep] (pet): equip a specified pet, example: {ep dog}
 `
 
+
+const pets = {
+    null:{
+        name:'None',
+        boost_name: 'None',
+        boost_object: 'auto_crops',
+        boost_amt: 0,
+        price: null,
+        price_multi: 0
+    },
+    dog:{
+        name: 'Dog',
+        boost_name: 'Crop Multi',
+        boost_object: 'crop_multi',
+        boost_amt: 1,
+        price: 1000,
+    }
+}
 
 const hoes = {
     wooden_hoe:{
@@ -31,9 +51,10 @@ const hoes = {
     }
 }
 
-var player = {
+const basePlayer = {
     coins:0,
     hoe:hoes.wooden_hoe,
+    pet:pets.null,
     crops:0,
     sell_multi:1,
     crop_multi:1,
@@ -43,7 +64,14 @@ var player = {
     },
     hoe_has:{
         wooden_hoe:true
-    }
+    },
+    pet_has:{
+        null:true
+    },
+}
+
+var player = {
+    ...basePlayer
 }
 
 const upgrades = {
@@ -62,7 +90,7 @@ const upgrades = {
         name: 'Hoe Efficiency',
         base_max_amt:50,
         max_amt: 50,
-        boost_name: 'Crop Multiplier',
+        boost_name: 'Crop Multi',
         boost_object: 'crop_multi',
         boost_amt: .05,
         price: 750,
@@ -90,6 +118,18 @@ for (let h in hoes) {
         }
     }
 }
+
+for (let p in pets) {
+    if (p in player.pet_has) {
+    }
+    else {
+        player.pet_has = {
+            ...player.pet_has,
+            [p]:false
+        }
+    }
+}
+
 console.log(player)
 
 window.cooldown = {
@@ -97,6 +137,7 @@ window.cooldown = {
 }
 
 function tick() {
+    reload()
     terminal.clear()
     terminal.echo(menu);
 
@@ -106,6 +147,16 @@ function tick() {
         }
         else {
             player[upgrades[u].boost_object] = parseFloat(((upgrades[u].boost_amt * player.upgrades_amt[u])).toFixed(1))
+        }
+    }
+    for (let p in pets) {
+        if (player.pet_has[p]) {
+            if (player[pets[p].boost_object] == 1) {
+                player[pets[p].boost_object] = parseFloat((1 + (pets[p].boost_amt)).toFixed(1))
+            }
+            else {
+                player[pets[p].boost_object] = parseFloat(((pets[p].boost_amt)).toFixed(1))
+            }
         }
     }
 
@@ -135,11 +186,14 @@ export function statsMenu() {
     var returnVal = `Stats:
 
 Hoe: [${player.hoe.name}]
+Pet: [${player.pet.name}]
 
 Crops: [${player.crops}]
 Auto Crops: [${player.auto_crops} cps]
+Crop Multi: [${player.crop_multi}]
 
 Coins: [${player.coins}]
+Coin Multi: [${player.sell_multi}]
 `
     menu = returnVal
     terminal.echo(returnVal)
@@ -267,6 +321,68 @@ export function equipHoe(hoe) {
     }
 }
 
+export function petsMenu() {
+    var returnVal = `Coins: [${player.coins}]\n\nPets:\n\n`
+    for (let h in pets) {
+        if (h != 'null') {
+            var pet = pets[h]
+            returnVal = returnVal + `${pet.name}:
+\t${pet.boost_name}: [${player[pet.boost_object]}] + ${pet.boost_amt}
+\tPrice: ${pet.price}
+\tHas: ${player.pet_has[h]}\n\n`
+        }
+    }
+    
+    menu = returnVal
+
+    terminal.echo(returnVal)
+}
+
+export function buyPet(pet) {
+    if (pet in pets) {
+        var pe = pets[pet]
+        if (player.pet_has[pet] == true) {
+            menu = `You already own ${pet}`
+            terminal.echo(menu)
+
+        }
+        else if (player.coins >= pe.price) {
+            player.coins = parseFloat((player.coins - pe.price).toFixed(1))
+            player.pet_has[pet] = true
+
+
+            menu = `You bought a ${pet} for ${pe.price} coins \nYour new balance is [${player.coins}] coins`
+            terminal.echo(menu)
+        }
+        else {
+            menu = `You dont have enough coins!`
+            terminal.echo(menu)
+        }
+    }
+    else {
+        menu = `${pet} isnt a valid upgrade`
+        terminal.echo(menu)
+    }
+}
+
+export function equipPet(pet) {
+    if (pet in pets) {
+        if (player.pet_has[pet] == true) {
+            player.pet = pets[pet]
+            menu = `Equipped ${pet}`
+            terminal.echo(menu)
+        }
+        else {
+            menu = `You dont own ${pet}`
+            terminal.echo(menu)
+        }
+    }
+    else {
+        menu = `${pet} isnt a valid pet`
+        terminal.echo(menu)
+    }
+}
+
 export function sellCrops() {
     player.coins = player.coins + (player.crops * player.sell_multi)
     menu = `Sold ${player.crops} crops for ${player.crops * player.sell_multi} coins!`
@@ -274,13 +390,46 @@ export function sellCrops() {
     terminal.echo(menu)
 }
 
+function reload() {
+    saveGame()
+    loadGame()
+}
 
 function saveGame() {
-    localStorage.setItem('saveData', JSON.stringify({
-        player:player,
-        cooldown:cooldown
-    }));
-    console.log('saved')
+    var save = {
+        player:{
+            
+        },
+        cooldown:{}
+    }
+    for (let p in basePlayer) {
+        save = {
+            ...save,
+            player:{
+                ...save.player,
+                [p]:basePlayer[p]
+            }
+        }
+    }
+    for (let p in player) {
+        save = {
+            ...save,
+            player:{
+                ...save.player,
+                [p]:player[p]
+            }
+        }
+    }
+    for (let c in cooldown) {
+        save = {
+            ...save,
+            cooldown:{
+                ...save.cooldown,
+                [c]:cooldown[c]
+            }
+        }
+    }
+    localStorage.setItem('saveData', JSON.stringify(save));
 }
 
 function loadGame() {
