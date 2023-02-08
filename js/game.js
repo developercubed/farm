@@ -115,7 +115,7 @@ for (let u in upgrades) {
     else {
         player.upgrades_price = {
             ...player.upgrades_price,
-            [u]:0
+            [u]:upgrades[u].price
         }
     }
 }
@@ -253,7 +253,7 @@ export function buyUpgrade(upgrade) {
 
         }
         else if (player.coins >= up.price) {
-            player.coins = parseFloat((player.coins - up.price).toFixed(1))
+            player.coins = parseFloat((player.coins - player.upgrades_price[upgrade]).toFixed(1))
             player.upgrades_amt[upgrade] = player.upgrades_amt[upgrade] + 1
             player.upgrades_price[upgrade] = parseFloat( player.upgrades_price[upgrade] )
 
