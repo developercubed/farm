@@ -1,4 +1,4 @@
-import { startGame, helpMenu, statsMenu, farm, upgradesMenu, buyUpgrade, hoesMenu, buyHoe, equipHoe, sellCrops, getVersion } from "./game.js";
+import { startGame, helpMenu, statsMenu, farm, upgradesMenu, buyUpgrade, hoesMenu, buyHoe, equipHoe, sellCrops, getVersion, buyPet, petsMenu, equipPet } from "./game.js";
 
 
 await jQuery(function($) {
@@ -63,6 +63,21 @@ await jQuery(function($) {
 
             getVersion()
         },
+        'bp':function(pet) {
+            terminal.clear()
+
+            buyPet(pet)
+        },
+        'p':function() {
+            terminal.clear()
+
+            petsMenu()
+        },
+        'ep':function(pet) {
+            terminal.clear()
+
+            equipPet(pet)
+        }
     }
     , {
         greetings: `Welcome to Farm!`,
